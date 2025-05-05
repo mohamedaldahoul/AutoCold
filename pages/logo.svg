@@ -1,0 +1,11 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="32" cy="32" r="30" fill="#F3F4F6" stroke="#7C3AED" stroke-width="4"/>
+  <g>
+    <!-- Snowflake -->
+    <path d="M32 16V48" stroke="#0EA5E9" stroke-width="3" stroke-linecap="round"/>
+    <path d="M20 24L44 40" stroke="#0EA5E9" stroke-width="3" stroke-linecap="round"/>
+    <path d="M44 24L20 40" stroke="#0EA5E9" stroke-width="3" stroke-linecap="round"/>
+    <!-- Lightning bolt -->
+    <polygon points="34,22 38,32 33,32 37,42 28,30 33,30 30,22" fill="#F472B6" stroke="#F472B6" stroke-width="1"/>
+  </g>
+</svg>

@@ -1,28 +1,27 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
+import Logo from "@/components/logo"
 
 export default function LandingHeader() {
   return (
     <header className="container sticky top-0 z-50 bg-white/80 backdrop-blur-sm">
       <div className="flex h-16 items-center justify-between py-4">
-        <div className="flex items-center gap-2">
-          <span className="text-xl font-bold tracking-tight">AutoCold</span>
-        </div>
+        <Logo />
         <nav className="hidden gap-6 md:flex">
           <Link
-            href="#features"
+            href="/#features"
             className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             Features
           </Link>
           <Link
-            href="#pricing"
+            href="/#pricing"
             className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             Pricing
           </Link>
           <Link
-            href="#blog"
+            href="/#blog"
             className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
           >
             Blog

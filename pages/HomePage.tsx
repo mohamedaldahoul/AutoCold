@@ -4,15 +4,14 @@ import { Zap, Target, TrendingUp, Mail, ArrowRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import Logo from "@/components/logo"
 
 const HomePage:FC =  ()=>{
   return (
     <div className="flex min-h-screen flex-col">
       <header className="container sticky top-0 z-50 bg-white/80 backdrop-blur-sm">
         <div className="flex h-16 items-center justify-between py-4">
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-bold tracking-tight">AutoCold</span>
-          </div>
+          <Logo />
           <nav className="hidden gap-6 md:flex">
             <Link
               href="#features"
@@ -857,7 +856,8 @@ const HomePage:FC =  ()=>{
           </nav>
         </div>
       </footer>
-    </div>)
+    </div>
+  )
 }
 
 export default HomePage;
