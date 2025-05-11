@@ -20,7 +20,7 @@ AutoCold is a web application that helps freelancers and agencies generate perso
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/autocold.git
+   git clone 
    cd autocold
    ```
 
