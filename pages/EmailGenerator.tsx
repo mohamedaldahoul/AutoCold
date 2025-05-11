@@ -2,6 +2,8 @@ import { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import Logo from '@/components/logo';
+import { api } from '@/lib/api';
+
 interface EmailResult {
   subject: string;
   body: string;
@@ -22,26 +24,15 @@ export default function EmailGenerator() {
     setError('');
     
     try {
-      const response = await fetch('/api/generate', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          targetNiche,
-          targetRole,
-          offer,
-          tone,
-        }),
+      const data = await api.emails.generate({
+        targetNiche,
+        targetRole,
+        offer,
+        tone,
       });
-
-      if (!response.ok) {
-        throw new Error('Failed to generate emails');
-      }
-
-      const data = await response.json();
+      
       setResults(data);
-    } catch (err) {
+    } catch (err: any) {
       setError('Failed to generate emails. Please try again.');
       console.error(err);
     } finally {

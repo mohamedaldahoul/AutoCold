@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import LandingHeader from '@/components/LandingHeader';
+import { api } from '@/lib/api';
 
 export default function Signup() {
   const router = useRouter();
@@ -37,29 +38,18 @@ export default function Signup() {
     }
 
     try {
-      const response = await fetch('/api/auth/signup', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email: formData.email,
-          password: formData.password,
-          companyName: formData.companyName || null,
-          role: formData.role || null,
-        }),
+      // Use the api utility instead of fetch
+      await api.auth.signUp({
+        email: formData.email,
+        password: formData.password,
+        companyName: formData.companyName || undefined,
+        role: formData.role || undefined,
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.details || data.error || 'Failed to sign up');
-      }
 
       // Redirect to dashboard or home page
       router.push('/');
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to sign up');
+    } catch (err: any) {
+      setError(err.response?.data?.details || err.response?.data?.error || err.message || 'Failed to sign up');
     } finally {
       setIsSubmitting(false);
     }

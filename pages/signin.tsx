@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import LandingHeader from '@/components/LandingHeader';
+import { api } from '@/lib/api';
 
 export default function SignIn() {
   const router = useRouter();
@@ -27,32 +28,19 @@ export default function SignIn() {
     setError('');
 
     try {
-      const response = await fetch('/api/auth/signin', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.details || data.error || 'Failed to sign in');
-      }
-
+      const data = await api.auth.signIn(formData.email, formData.password);
+      
       // Store the session token
       if (data.session) {
         localStorage.setItem('session', JSON.stringify(data.session));
-        // Also store the user data
         localStorage.setItem('user', JSON.stringify(data.user));
       }
 
       // Redirect to dashboard or home page
       router.push('/');
-    } catch (err) {
+    } catch (err: any) {
       console.error('Sign in error:', err);
-      setError(err instanceof Error ? err.message : 'Failed to sign in');
+      setError(err.response?.data?.details || err.response?.data?.error || err.message || 'Failed to sign in');
     } finally {
       setIsSubmitting(false);
     }

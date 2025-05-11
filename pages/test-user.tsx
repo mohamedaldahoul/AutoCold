@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Head from 'next/head';
+import axios from '@/lib/axios';
 
 export default function TestUser() {
   const [email, setEmail] = useState('ma811forever@gmail.com');
@@ -13,23 +14,10 @@ export default function TestUser() {
     setResult(null);
 
     try {
-      const response = await fetch('/api/auth/check-user', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.details || data.error || 'Failed to check user');
-      }
-
-      setResult(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to check user');
+      const response = await axios.post('/api/auth/check-user', { email });
+      setResult(response.data);
+    } catch (err: any) {
+      setError(err.response?.data?.error || err.message || 'Failed to check user');
     } finally {
       setIsLoading(false);
     }

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { api } from '@/lib/api';
 
 export default function SignOutButton() {
   const [isLoading, setIsLoading] = useState(false);
@@ -8,15 +9,8 @@ export default function SignOutButton() {
   const handleSignOut = async () => {
     setIsLoading(true);
     try {
-      const response = await fetch('/api/auth/signout', {
-        method: 'POST',
-      });
-
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.details || data.error || 'Failed to sign out');
-      }
-
+      await api.auth.signOut();
+      
       // Redirect to home page after successful sign out
       router.push('/');
     } catch (error) {

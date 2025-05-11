@@ -1,12 +1,38 @@
-import { FC } from "react"
+import { FC, useState } from "react"
 import Link from "next/link"
 import { Zap, Target, TrendingUp, Mail, ArrowRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Logo from "@/components/logo"
+import { api } from "@/lib/api"
 
 const HomePage:FC =  ()=>{
+  const [waitlistEmail, setWaitlistEmail] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleWaitlistSubmit = async () => {
+    if (!waitlistEmail || !waitlistEmail.includes('@')) {
+      setError('Please enter a valid email address');
+      return;
+    }
+
+    setIsSubmitting(true);
+    setError('');
+
+    try {
+      await api.waitlist.join(waitlistEmail);
+      setIsSubmitted(true);
+      setWaitlistEmail('');
+    } catch (err: any) {
+      setError(err.response?.data?.error || 'Failed to join waitlist');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
       <header className="container sticky top-0 z-50 bg-white/80 backdrop-blur-sm">
@@ -751,6 +777,7 @@ const HomePage:FC =  ()=>{
           </div>
         </section>
 
+        {/* Waitlist Section */}
         <section className="w-full py-12 md:py-24 lg:py-32">
           <div className="container grid items-center gap-6 px-4 md:px-6 lg:grid-cols-2 lg:gap-10">
             <div className="space-y-2">
@@ -758,13 +785,32 @@ const HomePage:FC =  ()=>{
               <p className="max-w-[600px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
                 Be the first to know when we launch our full version with advanced features.
               </p>
+              {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
+              {isSubmitted && (
+                <p className="text-green-500 font-medium mt-2">
+                  Thank you for joining our waitlist! We'll keep you updated.
+                </p>
+              )}
             </div>
             <div className="flex flex-col gap-2 min-[400px]:flex-row">
               <div className="flex-1">
-                <Input placeholder="Enter your email" type="email" className="h-12" />
+                <Input 
+                  placeholder="Enter your email" 
+                  type="email" 
+                  className="h-12"
+                  value={waitlistEmail}
+                  onChange={(e) => setWaitlistEmail(e.target.value)}
+                  disabled={isSubmitting || isSubmitted}
+                />
               </div>
-              <Button size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 text-white">
-                <Mail className="mr-2 h-4 w-4" /> Join Waitlist
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-purple-600 to-pink-600 text-white"
+                onClick={handleWaitlistSubmit}
+                disabled={isSubmitting || isSubmitted}
+              >
+                <Mail className="mr-2 h-4 w-4" /> 
+                {isSubmitting ? 'Joining...' : 'Join Waitlist'}
               </Button>
             </div>
           </div>
