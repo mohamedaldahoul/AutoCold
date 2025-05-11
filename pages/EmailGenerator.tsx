@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-
+import Logo from '@/components/logo';
 interface EmailResult {
   subject: string;
   body: string;
@@ -63,18 +63,19 @@ export default function EmailGenerator() {
 
     <header className="container mx-auto px-4 py-6">
       <nav className="flex justify-between items-center">
-        <div className="text-2xl font-bold text-primary">AutoCold</div>
+        <Logo />
         <div className="flex items-center gap-4">
-          <Link href="/landing" className="text-primary hover:text-secondary transition-colors">
+            <nav className="flex items-center space-x-4">
+          <Link href="/" className="text-primary hover:text-secondary transition-colors">
             About
           </Link>
-          <nav className="flex items-center space-x-4">
-            <Link href="/signin" className="text-gray-600 hover:text-gray-900">
+            <Link href="/dashboard" className="text-gray-600 hover:text-gray-900">Dashboard</Link>
+            {/* <Link href="/signin" className="text-gray-600 hover:text-gray-900">
               Sign In
             </Link>
             <Link href="/signup" className="text-gray-600 hover:text-gray-900">
               Sign Up
-            </Link>
+            </Link> */}
           </nav>
         </div>
       </nav>
