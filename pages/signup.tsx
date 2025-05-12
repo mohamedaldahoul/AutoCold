@@ -49,7 +49,7 @@ export default function Signup() {
       // Redirect to dashboard or home page
       router.push('/');
     } catch (err: any) {
-      setError(err.response?.data?.details || err.response?.data?.error || err.message || 'Failed to sign up');
+      setError(err.response?.data?.error || err.message || 'Failed to sign up');
     } finally {
       setIsSubmitting(false);
     }

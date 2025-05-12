@@ -40,7 +40,7 @@ export default function SignIn() {
       router.push('/');
     } catch (err: any) {
       console.error('Sign in error:', err);
-      setError(err.response?.data?.details || err.response?.data?.error || err.message || 'Failed to sign in');
+      setError(err.response?.data?.error || err.message || 'Failed to sign in');
     } finally {
       setIsSubmitting(false);
     }
