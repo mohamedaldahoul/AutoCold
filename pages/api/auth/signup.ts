@@ -124,8 +124,7 @@ export default async function handler(
     // No need to manually create profile - it's handled by the database trigger
 
     return res.status(201).json({ 
-      user: data.user,
-      session: data.session
+      user: data.user
     });
   } catch (error) {
     console.error('Error in signup API:', error);
