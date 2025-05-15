@@ -35,7 +35,7 @@ export default function LandingHeader() {
             Sign In
           </Link>
           <Button asChild variant="outline" className="hidden md:inline-flex">
-            <Link href="/EmailGenerator">Try Demo</Link>
+            <Link href="/demo">Try Demo</Link>
           </Button>
           <Button asChild className="hidden md:inline-flex">
             <Link href="/signup">Sign Up</Link>

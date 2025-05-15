@@ -19,7 +19,7 @@ export default function RootLayout({
         <div className="absolute bottom-6 right-6 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 p-2 text-white shadow-lg">
             <Zap className="h-6 w-6" />
         </div>
-        {/* <link rel="icon" href="/favicon.png" type="image/svg+xml" /> */}
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       </head>
       <body>{children}</body>
     </html>

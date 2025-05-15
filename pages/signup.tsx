@@ -3,21 +3,21 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import LandingHeader from '@/components/LandingHeader';
+import Footer from '@/components/Footer';
 import { api } from '@/lib/api';
 
-export default function Signup() {
+export default function SignUp() {
   const router = useRouter();
   const [formData, setFormData] = useState({
+    name: '',
     email: '',
     password: '',
     confirmPassword: '',
-    companyName: '',
-    role: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState('');
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
@@ -30,7 +30,6 @@ export default function Signup() {
     setIsSubmitting(true);
     setError('');
 
-    // Basic validation
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       setIsSubmitting(false);
@@ -38,17 +37,22 @@ export default function Signup() {
     }
 
     try {
-      // Use the api utility instead of fetch
-      await api.auth.signUp({
+      const data = await api.auth.signUp({
         email: formData.email,
         password: formData.password,
-        companyName: formData.companyName || undefined,
-        role: formData.role || undefined,
+        companyName: formData.name
       });
+      
+      // Store the session token
+      if (data.session) {
+        localStorage.setItem('session', JSON.stringify(data.session));
+        localStorage.setItem('user', JSON.stringify(data.user));
+      }
 
       // Redirect to dashboard or home page
       router.push('/');
     } catch (err: any) {
+      console.error('Sign up error:', err);
       setError(err.response?.data?.error || err.message || 'Failed to sign up');
     } finally {
       setIsSubmitting(false);
@@ -56,9 +60,9 @@ export default function Signup() {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <LandingHeader />
-      <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="flex-grow flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <Head>
           <title>Sign Up - AutoCold</title>
           <meta name="description" content="Create your AutoCold account" />
@@ -69,9 +73,9 @@ export default function Signup() {
             Create your account
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Or{' '}
+            Already have an account?{' '}
             <Link href="/signin" className="font-medium text-primary hover:text-secondary">
-              sign in to your account
+              Sign in
             </Link>
           </p>
         </div>
@@ -84,6 +88,24 @@ export default function Signup() {
                   {error}
                 </div>
               )}
+
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                  Full name
+                </label>
+                <div className="mt-1">
+                  <input
+                    id="name"
+                    name="name"
+                    type="text"
+                    autoComplete="name"
+                    required
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary"
+                  />
+                </div>
+              </div>
 
               <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -123,7 +145,7 @@ export default function Signup() {
 
               <div>
                 <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                  Confirm Password
+                  Confirm password
                 </label>
                 <div className="mt-1">
                   <input
@@ -136,43 +158,6 @@ export default function Signup() {
                     onChange={handleChange}
                     className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary"
                   />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="companyName" className="block text-sm font-medium text-gray-700">
-                  Company Name (Optional)
-                </label>
-                <div className="mt-1">
-                  <input
-                    id="companyName"
-                    name="companyName"
-                    type="text"
-                    value={formData.companyName}
-                    onChange={handleChange}
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label htmlFor="role" className="block text-sm font-medium text-gray-700">
-                  Your Role
-                </label>
-                <div className="mt-1">
-                  <select
-                    id="role"
-                    name="role"
-                    value={formData.role}
-                    onChange={handleChange}
-                    className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-primary focus:border-primary"
-                  >
-                    <option value="">Select your role</option>
-                    <option value="freelancer">Freelancer</option>
-                    <option value="agency">Agency</option>
-                    <option value="business_owner">Business Owner</option>
-                    <option value="other">Other</option>
-                  </select>
                 </div>
               </div>
 
@@ -215,6 +200,8 @@ export default function Signup() {
           </div>
         </div>
       </div>
-    </>
+
+      <Footer />
+    </div>
   );
 } 

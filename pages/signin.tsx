@@ -3,6 +3,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import LandingHeader from '@/components/LandingHeader';
+import Footer from '@/components/Footer';
 import { api } from '@/lib/api';
 
 export default function SignIn() {
@@ -47,9 +48,9 @@ export default function SignIn() {
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-gray-50 flex flex-col">
       <LandingHeader />
-      <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="flex-grow flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <Head>
           <title>Sign In - AutoCold</title>
           <meta name="description" content="Sign in to your AutoCold account" />
@@ -171,6 +172,8 @@ export default function SignIn() {
           </div>
         </div>
       </div>
-    </>
+
+      <Footer />
+    </div>
   );
 } 

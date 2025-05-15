@@ -1,30 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import OpenAI from 'openai';
+import { mockLeads } from '@/lib/mockData';
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
-
-const leads = [
-  {
-    name: "Sarah Johnson",
-    company: "Bloom Analytics",
-    title: "CMO",
-    summary: "Leads growth marketing at a 15-person B2B SaaS startup helping eCom brands."
-  },
-  {
-    name: "Michael Chen",
-    company: "TechFlow Solutions",
-    title: "CEO",
-    summary: "Founder of a 50-person AI automation platform serving enterprise clients."
-  },
-  {
-    name: "Emily Rodriguez",
-    company: "GrowthHack Labs",
-    title: "Marketing Director",
-    summary: "Heads digital marketing for a fast-growing marketing automation platform."
-  }
-];
 
 export default async function handler(
   req: NextApiRequest,
@@ -35,14 +15,20 @@ export default async function handler(
   }
 
   try {
-    const { targetNiche, targetRole, offer, tone } = req.body;
+    const { targetNiche, targetRole, offer, tone, selectedLeadIndex } = req.body;
 
     if (!targetNiche || !targetRole || !offer || !tone) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
+    // If selectedLeadIndex is provided and valid, only generate for that lead
+    const selectedLeads = selectedLeadIndex !== undefined && Number.isInteger(Number(selectedLeadIndex)) && 
+                          Number(selectedLeadIndex) >= 0 && Number(selectedLeadIndex) < mockLeads.length 
+                          ? [mockLeads[Number(selectedLeadIndex)]] 
+                          : mockLeads;
+
     const generatedEmails = await Promise.all(
-      leads.map(async (lead) => {
+      selectedLeads.map(async (lead) => {
         const prompt = `You are a cold email assistant helping a ${targetRole} write a personalized cold email.
 
 User Offer: ${offer}

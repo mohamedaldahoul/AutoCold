@@ -66,7 +66,7 @@ const HomePage:FC =  ()=>{
               Sign In
             </Link>
             <Button asChild variant="outline" className="hidden md:inline-flex">
-              <Link href="/EmailGenerator">Try Demo</Link>
+              <Link href="/demo">Try Demo</Link>
             </Button>
             <Button asChild className="hidden md:inline-flex">
               <Link href="/signup">Sign Up</Link>
@@ -108,10 +108,10 @@ const HomePage:FC =  ()=>{
                 </div>
                 <div className="flex flex-col gap-2 min-[400px]:flex-row">
                   <Button asChild size="lg" className="bg-gradient-to-r from-purple-600 to-pink-600 text-white">
-                    <Link href="#">Try Free Demo</Link>
+                    <Link href="/demo">Try Free Demo</Link>
                   </Button>
                   <Button asChild variant="outline" size="lg">
-                    <Link href="#">Learn More</Link>
+                    <Link href="#features">Learn More</Link>
                   </Button>
                 </div>
               </div>

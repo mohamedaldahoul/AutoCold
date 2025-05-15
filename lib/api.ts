@@ -54,6 +54,7 @@ export const api = {
       targetRole: string; 
       offer: string; 
       tone: string;
+      selectedLeadIndex?: number;
     }) => {
       const response = await axios.post('/api/generate', data);
       return response.data;
