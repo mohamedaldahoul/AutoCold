@@ -118,6 +118,41 @@ export default function LeadUploader() {
     }
   };
 
+  const handleExportCSV = () => {
+    if (generatedEmails.length === 0) return;
+
+    // Create CSV content
+    const headers = ['Lead Name', 'Company', 'Subject', 'Email Body'];
+    const rows = generatedEmails.map(email => {
+      const lead = leads.find(l => l.name === email.leadName);
+      return [
+        email.leadName,
+        lead?.company || '',
+        email.subject,
+        email.body.replace(/\n/g, ' ') // Replace newlines with spaces
+      ];
+    });
+
+    // Convert to CSV string
+    const csvContent = [
+      headers.join(','),
+      ...rows.map(row => row.map(cell => `"${cell.replace(/"/g, '""')}"`).join(','))
+    ].join('\n');
+
+    // Create and download file
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    const url = URL.createObjectURL(blob);
+    
+    link.setAttribute('href', url);
+    link.setAttribute('download', 'autocold_emails.csv');
+    link.style.visibility = 'hidden';
+    
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-6">
       {/* File Upload Area */}
@@ -271,7 +306,15 @@ export default function LeadUploader() {
       {/* Generated Emails */}
       {generatedEmails.length > 0 && (
         <div className="space-y-4">
-          <h3 className="text-lg font-medium text-gray-900">Generated Emails</h3>
+          <div className="flex justify-between items-center">
+            <h3 className="text-lg font-medium text-gray-900">Generated Emails</h3>
+            <Button
+              onClick={handleExportCSV}
+              className="bg-green-600 hover:bg-green-700 text-white"
+            >
+              Download Emails as CSV
+            </Button>
+          </div>
           <div className="space-y-6">
             {generatedEmails.map((email, index) => (
               <div key={index} className="bg-white p-6 rounded-lg border border-gray-200">
