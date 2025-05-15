@@ -45,6 +45,7 @@ const TEMPLATE_STORAGE_KEY = 'autocold_email_template';
 
 export default function LeadUploader() {
   const [leads, setLeads] = useState<Lead[]>([]);
+  const [selectedLeads, setSelectedLeads] = useState<Set<string>>(new Set());
   const [error, setError] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedEmails, setGeneratedEmails] = useState<GeneratedEmail[]>([]);
@@ -108,18 +109,28 @@ export default function LeadUploader() {
           }
 
           // Transform data to match our Lead interface
-          const parsedLeads = results.data.map((row) => {
-            const { name, title, company, summary, ...rest } = row;
-            return {
-              name: name || '',
-              title: title || '',
-              company: company || '',
-              summary: summary || '',
-              ...rest // Include any additional columns
-            };
-          });
+          const parsedLeads = results.data
+            .map((row) => {
+              const { name, title, company, summary, ...rest } = row;
+              return {
+                name: name || '',
+                title: title || '',
+                company: company || '',
+                summary: summary || '',
+                ...rest // Include any additional columns
+              };
+            })
+            .filter(lead => 
+              // Only keep rows where at least one of the required fields has content
+              lead.name.trim() !== '' || 
+              lead.title.trim() !== '' || 
+              lead.company.trim() !== '' || 
+              lead.summary.trim() !== ''
+            );
 
           setLeads(parsedLeads);
+          // Select all leads by default
+          setSelectedLeads(new Set(parsedLeads.map(lead => lead.name)));
         },
         error: (error: Error) => {
           setError(`Error parsing CSV: ${error.message}`);
@@ -143,9 +154,34 @@ export default function LeadUploader() {
     }));
   };
 
+  const handleLeadSelection = (leadName: string, checked: boolean) => {
+    setSelectedLeads(prev => {
+      const next = new Set(prev);
+      if (checked) {
+        next.add(leadName);
+      } else {
+        next.delete(leadName);
+      }
+      return next;
+    });
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedLeads(new Set(leads.map(lead => lead.name)));
+    } else {
+      setSelectedLeads(new Set());
+    }
+  };
+
   const handleGenerateEmails = async () => {
     if (!formData.niche || !formData.role || !formData.offer) {
       setError('Please fill in all required fields');
+      return;
+    }
+
+    if (selectedLeads.size === 0) {
+      setError('Please select at least one lead');
       return;
     }
 
@@ -153,8 +189,9 @@ export default function LeadUploader() {
     setError('');
 
     try {
+      const selectedLeadsData = leads.filter(lead => selectedLeads.has(lead.name));
       const response = await axios.post('/api/generate-emails', {
-        leads,
+        leads: selectedLeadsData,
         inputs: formData
       });
 
@@ -380,19 +417,34 @@ export default function LeadUploader() {
             <h3 className="text-lg font-medium text-gray-900">
               Preview ({leads.length} leads)
             </h3>
-            <Button
-              onClick={handleGenerateEmails}
-              disabled={isGenerating}
-              className="bg-primary hover:bg-secondary text-white"
-            >
-              {isGenerating ? 'Generating...' : 'Generate Emails'}
-            </Button>
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="select-all"
+                  checked={selectedLeads.size === leads.length}
+                  onCheckedChange={(checked: boolean) => handleSelectAll(checked)}
+                />
+                <Label htmlFor="select-all" className="text-sm text-gray-600">
+                  Select All
+                </Label>
+              </div>
+              <Button
+                onClick={handleGenerateEmails}
+                disabled={isGenerating || selectedLeads.size === 0}
+                className="bg-primary hover:bg-secondary text-white"
+              >
+                {isGenerating ? 'Generating...' : `Generate Emails (${selectedLeads.size})`}
+              </Button>
+            </div>
           </div>
 
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
+                  <th className="w-12 px-6 py-3">
+                    <span className="sr-only">Select</span>
+                  </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Name
                   </th>
@@ -410,6 +462,12 @@ export default function LeadUploader() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {leads.map((lead, index) => (
                   <tr key={index} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <Checkbox
+                        checked={selectedLeads.has(lead.name)}
+                        onCheckedChange={(checked: boolean) => handleLeadSelection(lead.name, checked)}
+                      />
+                    </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {lead.name}
                     </td>
