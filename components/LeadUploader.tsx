@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone';
 import Papa from 'papaparse';
 import axios from 'axios';
@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2 } from 'lucide-react';
+import { Checkbox } from '@/components/ui/checkbox';
 
 interface Lead {
   name: string;
@@ -33,18 +34,60 @@ interface GeneratedEmail {
   };
 }
 
+interface EmailTemplate {
+  niche: string;
+  role: string;
+  offer: string;
+  tone: string;
+}
+
+const TEMPLATE_STORAGE_KEY = 'autocold_email_template';
+
 export default function LeadUploader() {
   const [leads, setLeads] = useState<Lead[]>([]);
   const [error, setError] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedEmails, setGeneratedEmails] = useState<GeneratedEmail[]>([]);
   const [regeneratingEmails, setRegeneratingEmails] = useState<Set<string>>(new Set());
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<EmailTemplate>({
     niche: '',
     role: '',
     offer: '',
     tone: 'professional'
   });
+  const [saveAsTemplate, setSaveAsTemplate] = useState(false);
+
+  // Load template from localStorage on component mount
+  useEffect(() => {
+    const savedTemplate = localStorage.getItem(TEMPLATE_STORAGE_KEY);
+    if (savedTemplate) {
+      try {
+        const template = JSON.parse(savedTemplate) as EmailTemplate;
+        setFormData(template);
+        setSaveAsTemplate(true);
+      } catch (error) {
+        console.error('Error loading template:', error);
+      }
+    }
+  }, []);
+
+  // Save template to localStorage when form data changes and saveAsTemplate is true
+  useEffect(() => {
+    if (saveAsTemplate) {
+      localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(formData));
+    }
+  }, [formData, saveAsTemplate]);
+
+  const handleClearTemplate = () => {
+    localStorage.removeItem(TEMPLATE_STORAGE_KEY);
+    setFormData({
+      niche: '',
+      role: '',
+      offer: '',
+      tone: 'professional'
+    });
+    setSaveAsTemplate(false);
+  };
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setError('');
@@ -308,6 +351,28 @@ export default function LeadUploader() {
                   <SelectItem value="casual">Casual</SelectItem>
                 </SelectContent>
               </Select>
+            </div>
+            <div className="md:col-span-2 flex items-center justify-between">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="save-template"
+                  checked={saveAsTemplate}
+                  onCheckedChange={(checked: boolean) => setSaveAsTemplate(checked)}
+                />
+                <Label htmlFor="save-template" className="text-sm text-gray-600">
+                  Save as template
+                </Label>
+              </div>
+              {saveAsTemplate && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleClearTemplate}
+                  className="text-xs"
+                >
+                  Clear Template
+                </Button>
+              )}
             </div>
           </div>
 
