@@ -129,8 +129,8 @@ export default function LeadUploader() {
             );
 
           setLeads(parsedLeads);
-          // Select all leads by default
-          setSelectedLeads(new Set(parsedLeads.map(lead => lead.name)));
+          // Initialize with empty selection instead of selecting all leads
+          setSelectedLeads(new Set());
         },
         error: (error: Error) => {
           setError(`Error parsing CSV: ${error.message}`);
