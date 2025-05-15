@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Loader2 } from 'lucide-react';
 
 interface Lead {
   name: string;
@@ -26,6 +27,10 @@ interface GeneratedEmail {
   subject: string;
   body: string;
   leadName: string;
+  previousVersion?: {
+    subject: string;
+    body: string;
+  };
 }
 
 export default function LeadUploader() {
@@ -33,6 +38,7 @@ export default function LeadUploader() {
   const [error, setError] = useState<string>('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedEmails, setGeneratedEmails] = useState<GeneratedEmail[]>([]);
+  const [regeneratingEmails, setRegeneratingEmails] = useState<Set<string>>(new Set());
   const [formData, setFormData] = useState({
     niche: '',
     role: '',
@@ -151,6 +157,62 @@ export default function LeadUploader() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  const handleRegenerateEmail = async (leadName: string) => {
+    const lead = leads.find(l => l.name === leadName);
+    if (!lead) return;
+
+    // Store current version as previous
+    setGeneratedEmails(prev => prev.map(email => 
+      email.leadName === leadName
+        ? { ...email, previousVersion: { subject: email.subject, body: email.body } }
+        : email
+    ));
+
+    // Add to regenerating set
+    setRegeneratingEmails(prev => new Set(prev).add(leadName));
+
+    try {
+      const response = await axios.post('/api/generate-emails', {
+        leads: [lead],
+        inputs: formData
+      });
+
+      const newEmail = response.data.emails[0];
+      
+      setGeneratedEmails(prev => prev.map(email => 
+        email.leadName === leadName
+          ? { ...newEmail, previousVersion: email.previousVersion }
+          : email
+      ));
+    } catch (error) {
+      setError('Failed to regenerate email. Please try again.');
+      console.error('Error regenerating email:', error);
+    } finally {
+      setRegeneratingEmails(prev => {
+        const next = new Set(prev);
+        next.delete(leadName);
+        return next;
+      });
+    }
+  };
+
+  const handleTogglePreviousVersion = (leadName: string) => {
+    setGeneratedEmails(prev => prev.map(email => {
+      if (email.leadName === leadName && email.previousVersion) {
+        return {
+          ...email,
+          subject: email.previousVersion.subject,
+          body: email.previousVersion.body,
+          previousVersion: {
+            subject: email.subject,
+            body: email.body
+          }
+        };
+      }
+      return email;
+    }));
   };
 
   return (
@@ -318,9 +380,39 @@ export default function LeadUploader() {
           <div className="space-y-6">
             {generatedEmails.map((email, index) => (
               <div key={index} className="bg-white p-6 rounded-lg border border-gray-200">
-                <h4 className="text-sm font-medium text-gray-900 mb-2">
-                  To: {email.leadName}
-                </h4>
+                <div className="flex justify-between items-start mb-4">
+                  <h4 className="text-sm font-medium text-gray-900">
+                    To: {email.leadName}
+                  </h4>
+                  <div className="flex items-center space-x-2">
+                    {email.previousVersion && (
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleTogglePreviousVersion(email.leadName)}
+                        className="text-xs"
+                      >
+                        View Previous Version
+                      </Button>
+                    )}
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleRegenerateEmail(email.leadName)}
+                      disabled={regeneratingEmails.has(email.leadName)}
+                      className="text-xs"
+                    >
+                      {regeneratingEmails.has(email.leadName) ? (
+                        <>
+                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          Regenerating...
+                        </>
+                      ) : (
+                        'Regenerate'
+                      )}
+                    </Button>
+                  </div>
+                </div>
                 <div className="space-y-2">
                   <div>
                     <span className="text-sm font-medium text-gray-500">Subject: </span>
