@@ -26,6 +26,48 @@ interface EmailResponse {
   leadName: string;
 }
 
+const generateEmailPrompt = ({
+  leadName,
+  leadTitle,
+  company,
+  summary,
+  niche,
+  role,
+  offer,
+  tone
+}: {
+  leadName: string;
+  leadTitle: string;
+  company: string;
+  summary: string;
+  niche: string;
+  role: string;
+  offer: string;
+  tone: string;
+}) => `
+You are an expert cold email copywriter with a focus on high-response outreach.
+
+Write a cold email to **${leadName}**, who is the **${leadTitle}** at **${company}**. This person is involved in the following area:  
+"${summary}"
+
+The sender is offering:  
+"${offer}"
+
+This outreach is targeted at people in the **${niche}** space, specifically the **${role}** persona.  
+Write in a ${tone.toLowerCase()} tone. Use simple, direct, persuasive language.
+
+### Your goals:
+- Personalize the intro based on their title and summary
+- Keep the email short (60–120 words max)
+- Use a natural, human voice (avoid "AI-speak")
+- Include a single clear call to action (e.g., a short call, reply back, or share info)
+- Start with a first-line hook that shows you did your research
+- No subject line needed unless requested
+
+### Output format:
+Just return the email body, no headers or explanations.
+`;
+
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -40,38 +82,43 @@ export default async function handler(
     const emails: EmailResponse[] = [];
 
     for (const lead of leads) {
-      const prompt = `Write a cold email to ${lead.name}, the ${lead.title} at ${lead.company}, who is involved in ${lead.summary}. The user is offering: "${inputs.offer}". Use a ${inputs.tone} tone. Target niche is ${inputs.niche}.
-
-Please format your response as follows:
-Subject: [Your subject line]
-Body: [Your email body]`;
+      const prompt = generateEmailPrompt({
+        leadName: lead.name,
+        leadTitle: lead.title,
+        company: lead.company,
+        summary: lead.summary,
+        niche: inputs.niche,
+        role: inputs.role,
+        offer: inputs.offer,
+        tone: inputs.tone
+      });
 
       const completion = await openai.chat.completions.create({
         model: "gpt-4",
         messages: [
           {
             role: "system",
-            content: "You are an expert cold email writer. Generate a compelling cold email with a subject line and body. Format your response with 'Subject:' and 'Body:' fields"
+            content: "You are an expert cold email copywriter. Generate compelling, personalized cold emails that drive responses."
           },
           {
             role: "user",
             content: prompt
           }
-        ]
+        ],
+        temperature: 0.7,
       });
 
       const response = completion.choices[0].message.content || '';
       
-      // Parse the response to extract subject and body
-      const subjectMatch = response.match(/Subject:\s*(.*?)(?:\n|$)/);
-      const bodyMatch = response.match(/Body:\s*([\s\S]*?)(?:\n\n|$)/);
-
-      const subject = subjectMatch ? subjectMatch[1].trim() : 'No subject';
-      const body = bodyMatch ? bodyMatch[1].trim() : 'No body';
+      // Since we're not asking for a subject line, we'll generate one based on the first line
+      const firstLine = response.split('\n')[0].trim();
+      const subject = firstLine.length > 50 
+        ? firstLine.substring(0, 47) + '...'
+        : firstLine;
       
       emails.push({
         subject,
-        body,
+        body: response.trim(),
         leadName: lead.name
       });
     }
