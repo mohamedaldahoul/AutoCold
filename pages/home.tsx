@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Logo from "@/components/logo"
 import { api } from "@/lib/api"
+import Footer from "@/components/Footer"
 
 const HomePage:FC =  ()=>{
   const [waitlistEmail, setWaitlistEmail] = useState('');
@@ -771,7 +772,7 @@ const HomePage:FC =  ()=>{
 
             <div className="flex justify-center">
               <Button asChild variant="outline" size="lg">
-                <Link href="#">View All Articles</Link>
+                <Link href="/blog">View All Articles</Link>
               </Button>
             </div>
           </div>
@@ -873,35 +874,7 @@ const HomePage:FC =  ()=>{
           </div>
         </section>
       </main>
-      <footer className="border-t bg-white">
-        <div className="container flex flex-col gap-4 py-10 md:h-24 md:flex-row md:items-center md:justify-between md:py-0">
-          <div className="flex flex-col gap-4 md:flex-row md:gap-6">
-            <p className="text-center text-sm leading-loose text-muted-foreground md:text-left">
-              © 2024 AutoCold. All rights reserved.
-            </p>
-          </div>
-          <nav className="flex items-center justify-center gap-4 md:gap-6">
-            <Link
-              href="#"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Terms
-            </Link>
-            <Link
-              href="#"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Privacy
-            </Link>
-            <Link
-              href="#"
-              className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-            >
-              Contact
-            </Link>
-          </nav>
-        </div>
-      </footer>
+      <Footer />
     </div>
   )
 }
