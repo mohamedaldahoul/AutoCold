@@ -2,7 +2,11 @@ import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import Logo from "@/components/logo"
 
-export default function LandingHeader() {
+interface LandingHeaderProps {
+  hideDemoButton?: boolean;
+}
+
+export default function LandingHeader({ hideDemoButton = false }: LandingHeaderProps) {
   return (
     <header className="container sticky top-0 z-50 bg-white/80 backdrop-blur-sm">
       <div className="flex h-16 items-center justify-between py-4">
@@ -34,9 +38,11 @@ export default function LandingHeader() {
           >
             Sign In
           </Link>
-          <Button asChild variant="outline" className="hidden md:inline-flex">
-            <Link href="/demo">Try Demo</Link>
-          </Button>
+          {!hideDemoButton && (
+            <Button asChild variant="outline" className="hidden md:inline-flex">
+              <Link href="/demo">Try Demo</Link>
+            </Button>
+          )}
           <Button asChild className="hidden md:inline-flex">
             <Link href="/signup">Sign Up</Link>
           </Button>
