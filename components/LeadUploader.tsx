@@ -424,7 +424,7 @@ export default function LeadUploader() {
               <Button
                 onClick={handleGenerateEmails}
                 disabled={isGenerating || selectedLeads.size === 0}
-                className="bg-primary hover:bg-secondary text-white"
+                className="bg-primary hover:bg-[gray] text-white"
               >
                 {isGenerating ? 'Generating...' : `Generate Emails (${selectedLeads.size})`}
               </Button>

@@ -40,8 +40,9 @@ export default function Demo() {
       });
       
       setResults(data);
-    } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : 'An error occurred. Please try again.');
+    } catch (err: any) {
+      setError('Failed to generate emails. Please try again.');
+      console.error(err);
     } finally {
       setIsLoading(false);
     }
@@ -171,7 +172,7 @@ export default function Demo() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-secondary transition-colors disabled:opacity-50"
+            className="w-full bg-primary text-white py-2 px-4 rounded-md hover:bg-[gray] transition-colors disabled:opacity-50"
           >
             {isLoading ? 'Generating...' : 'Generate Emails'}
           </button>
