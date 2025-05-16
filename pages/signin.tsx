@@ -23,25 +23,31 @@ export default function SignIn() {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError('');
 
     try {
-      const data = await api.auth.signIn(formData.email, formData.password);
+      const formData = new FormData(e.currentTarget);
+      const data = {
+        email: formData.get('email') as string,
+        password: formData.get('password') as string,
+      };
       
-      // Store the session token
-      if (data.session) {
-        localStorage.setItem('session', JSON.stringify(data.session));
-        localStorage.setItem('user', JSON.stringify(data.user));
-      }
+      const response = await api.auth.signIn('credentials', {
+        redirect: false,
+        email: data.email,
+        password: data.password,
+      });
 
-      // Redirect to dashboard or home page
-      router.push('/');
-    } catch (err: any) {
-      console.error('Sign in error:', err);
-      setError(err.response?.data?.error || err.message || 'Failed to sign in');
+      if (response?.error) {
+        setError('Invalid email or password');
+      } else {
+        router.push('/dashboard');
+      }
+    } catch {
+      setError('An error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

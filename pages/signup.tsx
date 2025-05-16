@@ -25,7 +25,7 @@ export default function SignUp() {
     }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError('');
@@ -37,23 +37,22 @@ export default function SignUp() {
     }
 
     try {
-      const data = await api.auth.signUp({
-        email: formData.email,
-        password: formData.password,
-        companyName: formData.name
-      });
+      const formData = new FormData(e.currentTarget);
+      const data = {
+        name: formData.get('name') as string,
+        email: formData.get('email') as string,
+        password: formData.get('password') as string,
+      };
       
-      // Store the session token
-      if (data.session) {
-        localStorage.setItem('session', JSON.stringify(data.session));
-        localStorage.setItem('user', JSON.stringify(data.user));
-      }
+      const response = await api.auth.signUp(data);
 
-      // Redirect to dashboard or home page
-      router.push('/');
-    } catch (err: any) {
-      console.error('Sign up error:', err);
-      setError(err.response?.data?.error || err.message || 'Failed to sign up');
+      if (response?.error) {
+        setError('Failed to create account');
+      } else {
+        router.push('/dashboard');
+      }
+    } catch {
+      setError('An error occurred. Please try again.');
     } finally {
       setIsSubmitting(false);
     }

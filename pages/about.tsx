@@ -64,7 +64,7 @@ const AboutPage: FC = () => {
                 <div className="space-y-2">
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">About AutoCold</h1>
                   <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    We're on a mission to revolutionize cold email outreach with AI-powered automation.
+                    We&apos;re on a mission to revolutionize cold email outreach with AI-powered automation.
                   </p>
                 </div>
               </div>
@@ -78,12 +78,12 @@ const AboutPage: FC = () => {
                 <div className="space-y-4">
                   <h2 className="text-3xl font-bold tracking-tighter">Our Mission</h2>
                   <p className="text-muted-foreground">
-                    At AutoCold, we believe that meaningful business connections shouldn't be limited by time or resources. 
-                    Our mission is to empower freelancers, agencies, and businesses to create authentic, personalized 
-                    connections at scale through AI-powered cold email automation.
+                    At AutoCold, we&apos;re on a mission to revolutionize cold email outreach. We believe that 
+                    meaningful connections shouldn&apos;t be limited by time or resources. Our AI-powered platform 
+                    helps businesses and professionals create personalized, effective cold emails at scale.
                   </p>
                   <p className="text-muted-foreground">
-                    We're committed to making cold outreach more efficient, effective, and ethical, helping our customers 
+                    We&apos;re committed to making cold outreach more efficient, effective, and ethical, helping our customers 
                     build genuine relationships while saving valuable time and resources.
                   </p>
                 </div>
@@ -108,7 +108,8 @@ const AboutPage: FC = () => {
                 <div className="space-y-2">
                   <h2 className="text-3xl font-bold tracking-tighter">Our Values</h2>
                   <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    These core values guide everything we do at AutoCold.
+                    We&apos;re committed to helping you achieve your outreach goals while maintaining the highest 
+                    standards of quality and personalization.
                   </p>
                 </div>
               </div>

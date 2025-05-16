@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
-import Logo from '@/components/logo';
 import { api } from '@/lib/api';
-import { Lead, mockLeads } from '@/lib/mockData';
-import { Button } from '@/components/ui/button';
+import { mockLeads } from '@/lib/mockData';
 import LandingHeader from '@/components/LandingHeader';
 
 interface EmailResult {
@@ -42,9 +40,8 @@ export default function Demo() {
       });
       
       setResults(data);
-    } catch (err: any) {
-      setError('Failed to generate emails. Please try again.');
-      console.error(err);
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'An error occurred. Please try again.');
     } finally {
       setIsLoading(false);
     }

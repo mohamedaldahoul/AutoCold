@@ -104,10 +104,10 @@ const PrivacyPage: FC = () => {
                   <h2>8. Third-Party Services</h2>
                   <p>
                     We may use third-party services that collect, monitor, and analyze this information to improve 
-                    our service's functionality.
+                    our service&apos;s functionality.
                   </p>
 
-                  <h2>9. Children's Privacy</h2>
+                  <h2>9. Children&apos;s Privacy</h2>
                   <p>
                     Our service does not address anyone under the age of 13. We do not knowingly collect personally 
                     identifiable information from children under 13.
@@ -116,7 +116,7 @@ const PrivacyPage: FC = () => {
                   <h2>10. Changes to This Privacy Policy</h2>
                   <p>
                     We may update our Privacy Policy from time to time. We will notify you of any changes by posting 
-                    the new Privacy Policy on this page and updating the "Last updated" date.
+                    the new Privacy Policy on this page and updating the &quot;Last updated&quot; date.
                   </p>
 
                   <h2>11. Contact Us</h2>

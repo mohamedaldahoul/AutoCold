@@ -7,7 +7,6 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import LandingHeader from "@/components/LandingHeader"
 import Footer from "@/components/Footer"
-import { api } from "@/lib/api"
 
 const ContactPage: FC = () => {
   const [formData, setFormData] = useState({
@@ -30,8 +29,8 @@ const ContactPage: FC = () => {
       await new Promise(resolve => setTimeout(resolve, 1000)) // Simulated API call
       setIsSubmitted(true)
       setFormData({ name: "", email: "", subject: "", message: "" })
-    } catch (err: any) {
-      setError(err.message || "Failed to send message")
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : "Failed to send message")
     } finally {
       setIsSubmitting(false)
     }
@@ -59,7 +58,7 @@ const ContactPage: FC = () => {
                 <div className="space-y-2">
                   <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Contact Us</h1>
                   <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                    Have questions? We're here to help. Send us a message and we'll get back to you as soon as possible.
+                    Have questions? We&apos;re here to help. Send us a message and we&apos;ll get back to you as soon as possible.
                   </p>
                 </div>
               </div>
@@ -124,7 +123,7 @@ const ContactPage: FC = () => {
                       </div>
                       <h3 className="text-xl font-semibold">Message Sent!</h3>
                       <p className="text-muted-foreground">
-                        Thank you for reaching out. We'll get back to you as soon as possible.
+                        Thank you for reaching out. We&apos;ll get back to you as soon as possible.
                       </p>
                       <Button
                         variant="outline"

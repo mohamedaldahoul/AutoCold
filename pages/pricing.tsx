@@ -61,7 +61,7 @@ const PricingPage: FC = () => {
     <>
       <Head>
         <title>Pricing | AutoCold</title>
-        <meta name="description" content="Choose the perfect plan for your cold email outreach needs with AutoCold's flexible pricing options." />
+        <meta name="description" content="Choose the perfect plan for your cold email outreach needs with AutoCold&#39;s flexible pricing options." />
       </Head>
 
       <div className="flex min-h-screen flex-col">
@@ -146,7 +146,7 @@ const PricingPage: FC = () => {
                   <div className="space-y-2">
                     <h3 className="text-xl font-bold">What happens after my free trial?</h3>
                     <p className="text-muted-foreground">
-                      After your 14-day free trial, you'll be automatically charged for the plan you selected. 
+                      After your 14-day free trial, you&apos;ll be automatically charged for the plan you selected. 
                       You can cancel or change your plan at any time.
                     </p>
                   </div>
@@ -154,7 +154,7 @@ const PricingPage: FC = () => {
                   <div className="space-y-2">
                     <h3 className="text-xl font-bold">Can I upgrade or downgrade my plan?</h3>
                     <p className="text-muted-foreground">
-                      Yes, you can change your plan at any time. When upgrading, you'll be charged the prorated 
+                      Yes, you can change your plan at any time. When upgrading, you&apos;ll be charged the prorated 
                       amount for the remainder of your billing cycle. When downgrading, the new rate will apply 
                       at the start of your next billing cycle.
                     </p>
@@ -171,7 +171,7 @@ const PricingPage: FC = () => {
                   <div className="space-y-2">
                     <h3 className="text-xl font-bold">Do you offer refunds?</h3>
                     <p className="text-muted-foreground">
-                      We offer a 14-day money-back guarantee if you're not satisfied with our service. 
+                      We offer a 14-day money-back guarantee if you&apos;re not satisfied with our service. 
                       No questions asked.
                     </p>
                   </div>

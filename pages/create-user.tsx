@@ -1,24 +1,28 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import Head from 'next/head';
 import { api } from '@/lib/api';
 
 export default function CreateUser() {
+  const router = useRouter();
   const [email, setEmail] = useState('ma811forever@gmail.com');
   const [password, setPassword] = useState('ilovesuperbase');
-  const [result, setResult] = useState<any>(null);
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const createUser = async () => {
+  const handleCreateUser = async () => {
     setIsLoading(true);
     setError('');
-    setResult(null);
 
     try {
-      const data = await api.auth.signUp({ email, password });
-      setResult(data);
-    } catch (err: any) {
-      setError(err.response?.data?.error || err.message || 'Failed to create user');
+      const response = await api.user.createTestUser();
+      if (response.error) {
+        setError(response.error);
+      } else {
+        router.push('/dashboard');
+      }
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'Failed to create user');
     } finally {
       setIsLoading(false);
     }
@@ -73,7 +77,7 @@ export default function CreateUser() {
 
             <div>
               <button
-                onClick={createUser}
+                onClick={handleCreateUser}
                 disabled={isLoading}
                 className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-secondary focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:opacity-50"
               >
@@ -84,14 +88,6 @@ export default function CreateUser() {
             {error && (
               <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-md">
                 {error}
-              </div>
-            )}
-
-            {result && (
-              <div className="bg-white p-4 rounded-md shadow">
-                <pre className="text-sm overflow-auto">
-                  {JSON.stringify(result, null, 2)}
-                </pre>
               </div>
             )}
           </div>

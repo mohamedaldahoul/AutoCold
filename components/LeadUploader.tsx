@@ -17,13 +17,6 @@ interface Lead {
   [key: string]: string; // Allow for additional columns
 }
 
-interface ParseResult {
-  data: Lead[];
-  meta: {
-    fields: string[];
-  };
-}
-
 interface GeneratedEmail {
   subject: string;
   body: string;

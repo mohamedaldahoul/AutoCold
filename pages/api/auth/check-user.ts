@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { supabase } from '@/utils/supabase-client';
+import { getSession } from 'next-auth/react';
 
 export default async function handler(
   req: NextApiRequest,
@@ -32,12 +33,17 @@ export default async function handler(
     }
 
     // Try to sign in to check if user exists in auth
-    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+    const { error: authError } = await supabase.auth.signInWithPassword({
       email,
       password: 'dummy-password', // We don't care about the password for this check
     });
 
     const exists = !authError || authError.message !== 'Invalid login credentials';
+
+    const session = await getSession({ req });
+    if (!session) {
+      return res.status(401).json({ error: 'Not authenticated' });
+    }
 
     return res.status(200).json({
       exists,

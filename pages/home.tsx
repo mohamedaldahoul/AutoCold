@@ -1,5 +1,6 @@
 import { FC, useState } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { Zap, Target, TrendingUp, Mail, ArrowRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -27,8 +28,8 @@ const HomePage:FC =  ()=>{
       await api.waitlist.join(waitlistEmail);
       setIsSubmitted(true);
       setWaitlistEmail('');
-    } catch (err: any) {
-      setError(err.response?.data?.error || 'Failed to join waitlist');
+    } catch (error: unknown) {
+      setError(error instanceof Error ? error.message : 'Failed to join waitlist');
     } finally {
       setIsSubmitting(false);
     }
@@ -319,7 +320,8 @@ const HomePage:FC =  ()=>{
               <div className="space-y-2">
                 <h2 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Why Choose AutoCold?</h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Our AI-powered platform delivers results that outperform traditional cold emailing methods.
+                  We&apos;re committed to helping you achieve your outreach goals while maintaining the highest 
+                  standards of quality and personalization.
                 </p>
               </div>
             </div>
@@ -365,7 +367,7 @@ const HomePage:FC =  ()=>{
                   Simple, Transparent Pricing
                 </h2>
                 <p className="max-w-[900px] text-muted-foreground md:text-xl/relaxed lg:text-base/relaxed xl:text-xl/relaxed">
-                  Choose the plan that's right for your business. All plans include a 14-day free trial.
+                  Choose the plan that&apos;s right for your business. All plans include a 14-day free trial.
                 </p>
               </div>
             </div>
@@ -691,9 +693,11 @@ const HomePage:FC =  ()=>{
               {/* Blog Post 1 */}
               <div className="group flex flex-col rounded-xl border bg-white shadow-sm transition-all hover:shadow-md">
                 <div className="aspect-video overflow-hidden rounded-t-xl">
-                  <img
+                  <Image
                     src="/placeholder.svg?height=200&width=400"
                     alt="Blog post thumbnail"
+                    width={400}
+                    height={200}
                     className="h-full w-full object-cover transition-all group-hover:scale-105"
                   />
                 </div>
@@ -718,9 +722,11 @@ const HomePage:FC =  ()=>{
               {/* Blog Post 2 */}
               <div className="group flex flex-col rounded-xl border bg-white shadow-sm transition-all hover:shadow-md">
                 <div className="aspect-video overflow-hidden rounded-t-xl">
-                  <img
+                  <Image
                     src="/placeholder.svg?height=200&width=400"
                     alt="Blog post thumbnail"
+                    width={400}
+                    height={200}
                     className="h-full w-full object-cover transition-all group-hover:scale-105"
                   />
                 </div>
@@ -744,9 +750,11 @@ const HomePage:FC =  ()=>{
               {/* Blog Post 3 */}
               <div className="group flex flex-col rounded-xl border bg-white shadow-sm transition-all hover:shadow-md">
                 <div className="aspect-video overflow-hidden rounded-t-xl">
-                  <img
+                  <Image
                     src="/placeholder.svg?height=200&width=400"
                     alt="Blog post thumbnail"
+                    width={400}
+                    height={200}
                     className="h-full w-full object-cover transition-all group-hover:scale-105"
                   />
                 </div>
@@ -789,7 +797,7 @@ const HomePage:FC =  ()=>{
               {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
               {isSubmitted && (
                 <p className="text-green-500 font-medium mt-2">
-                  Thank you for joining our waitlist! We'll keep you updated.
+                  Thank you for joining our waitlist! We&apos;ll keep you updated.
                 </p>
               )}
             </div>

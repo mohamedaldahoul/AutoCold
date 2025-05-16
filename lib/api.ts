@@ -3,21 +3,75 @@ import axios from './axios';
 /**
  * API utility for centralizing endpoint calls
  */
+interface ApiResponse<T> {
+  data?: T;
+  error?: string;
+}
+
+interface Session {
+  token: string;
+  user: {
+    id: string;
+    email: string;
+    name: string;
+  };
+}
+
+interface AuthResponse {
+  session: Session;
+  user: Session['user'];
+}
+
+interface UserProfile {
+  id: string;
+  email: string;
+  name: string;
+  company?: string;
+  role?: string;
+}
+
+interface EmailData {
+  id: string;
+  subject: string;
+  body: string;
+  leadName: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const api = {
   /**
    * Authentication related API calls
    */
   auth: {
     // Sign in with email and password
-    signIn: async (email: string, password: string) => {
-      const response = await axios.post('/api/auth/signin', { email, password });
-      return response.data;
+    signIn: async (email: string, password: string): Promise<ApiResponse<AuthResponse>> => {
+      try {
+        const response = await fetch('/api/auth/signin', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await response.json();
+        return { data };
+      } catch {
+        return { error: 'Failed to sign in' };
+      }
     },
 
     // Sign up new user
-    signUp: async (userData: { email: string; password: string; companyName?: string; role?: string }) => {
-      const response = await axios.post('/api/auth/signup', userData);
-      return response.data;
+    signUp: async (data: { email: string; password: string; name: string }): Promise<ApiResponse<AuthResponse>> => {
+      try {
+        const response = await fetch('/api/auth/signup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+        const responseData = await response.json();
+        return { data: responseData };
+      } catch {
+        return { error: 'Failed to sign up' };
+      }
     },
 
     // Sign out user
@@ -38,7 +92,7 @@ export const api = {
     },
 
     // Update user profile
-    updateProfile: async (data: any) => {
+    updateProfile: async (data: Partial<UserProfile>) => {
       const response = await axios.put('/api/user/profile', data);
       return response.data;
     },
@@ -61,7 +115,7 @@ export const api = {
     },
 
     // Save generated email
-    save: async (emailData: any) => {
+    save: async (emailData: EmailData) => {
       const response = await axios.post('/api/emails/save', emailData);
       return response.data;
     },
